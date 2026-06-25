@@ -7,40 +7,59 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Mulish:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#0d0d0d;--bg2:#161616;--bg3:#1e1e1e;--border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);--gold:#c9a84c;--text:#f0ede8;--text-dim:#8a8580;--text-mid:#b5b0a8;--green:#3ecf6e;--red:#e05252}
-html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Mulish',sans-serif;font-size:14px}
-header{display:flex;align-items:center;justify-content:space-between;padding:18px 28px 14px;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:100}
-.logo{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:4px;color:var(--gold)}
+:root{--bg:#0d0d0d;--bg2:#161616;--bg3:#1e1e1e;--border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);--gold:#c9a84c;--text:#f0ede8;--text-dim:#8a8580;--text-mid:#b5b0a8;--green:#3ecf6e;--red:#e05252;--hour:64px}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Mulish',sans-serif;font-size:14px;overflow:hidden}
+header{display:flex;align-items:center;justify-content:space-between;padding:14px 24px 12px;border-bottom:1px solid var(--border);background:var(--bg)}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:4px;color:var(--gold)}
 .header-right{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
-.branch-label{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;color:var(--text-mid)}
-.clock{font-size:13px;color:var(--text-dim)}
-.date-bar{padding:10px 28px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.date-label{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--gold)}
+.branch-label{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:3px;color:var(--text-mid)}
+.clock{font-size:12px;color:var(--text-dim)}
+.date-bar{padding:8px 24px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.date-label{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;color:var(--gold)}
 .day-btns{display:flex;gap:6px;margin-left:auto}
-.day-btn{font-family:'Mulish',sans-serif;font-size:11px;padding:4px 12px;border-radius:20px;border:1px solid var(--border2);background:transparent;color:var(--text-dim);cursor:pointer;transition:all 0.2s}
+.day-btn{font-family:'Mulish',sans-serif;font-size:11px;padding:3px 12px;border-radius:20px;border:1px solid var(--border2);background:transparent;color:var(--text-dim);cursor:pointer}
 .day-btn.active{background:var(--gold);color:#000;border-color:var(--gold);font-weight:700}
 .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);margin-right:5px;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
-#board{display:grid;gap:1px;background:var(--border);min-height:calc(100vh - 120px)}
-.col{background:var(--bg);display:flex;flex-direction:column}
-.col-header{padding:14px 16px 12px;background:var(--bg2);border-bottom:2px solid var(--gold);position:sticky;top:74px;z-index:50}
-.master-name{font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:2px;color:var(--text)}
-.master-count{font-size:11px;color:var(--text-dim);margin-top:3px}
-.cards{padding:10px;display:flex;flex-direction:column;gap:7px}
-.card{background:var(--bg3);border-radius:10px;border:1px solid var(--border);padding:10px 12px;position:relative}
-.card.sv{border-left:3px solid var(--green)}
-.card.sc{border-left:3px solid var(--red);opacity:0.55}
-.card.sp{border-left:3px solid var(--border2)}
-.card.now{border-color:var(--gold);background:rgba(201,168,76,0.06)}
-.card-time{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);line-height:1;margin-bottom:4px}
-.card.now .card-time{color:#fff}
-.card-client{font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px}
-.card-service{font-size:11px;color:var(--text-mid);line-height:1.45}
-.card-icon{position:absolute;top:10px;right:10px;font-size:12px}
-#loading{display:flex;align-items:center;justify-content:center;height:60vh;flex-direction:column;gap:16px;color:var(--text-dim)}
-.spinner{width:32px;height:32px;border:2px solid var(--border2);border-top-color:var(--gold);border-radius:50%;animation:spin 0.9s linear infinite}
+
+/* GRID */
+#wrap{display:flex;flex-direction:column;height:calc(100vh - 90px)}
+#scroll{overflow-y:auto;flex:1}
+#grid{display:flex;position:relative}
+
+/* TIME COLUMN */
+.time-col{width:52px;flex-shrink:0;position:sticky;left:0;z-index:20;background:var(--bg)}
+.time-slot{height:var(--hour);border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:flex-end;padding:4px 8px 0 0;font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--text-dim);letter-spacing:1px}
+
+/* MASTER COLUMNS */
+#cols{display:flex;flex:1}
+.master-col{flex:1;border-left:1px solid var(--border);position:relative;min-width:0}
+.master-head{position:sticky;top:0;z-index:10;background:var(--bg2);border-bottom:2px solid var(--gold);padding:10px 12px 8px}
+.master-name{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:2px;color:var(--text)}
+.master-count{font-size:10px;color:var(--text-dim);margin-top:2px}
+.master-body{position:relative}
+.hour-line{position:absolute;left:0;right:0;border-bottom:1px solid var(--border);pointer-events:none}
+
+/* CARDS */
+.appt{position:absolute;left:4px;right:4px;border-radius:8px;padding:6px 8px;overflow:hidden;cursor:default;border:1px solid rgba(255,255,255,0.06)}
+.appt.sv{background:rgba(62,207,110,0.12);border-left:3px solid var(--green)}
+.appt.sc{background:rgba(224,82,82,0.08);border-left:3px solid var(--red);opacity:0.6}
+.appt.sp{background:var(--bg3);border-left:3px solid var(--border2)}
+.appt.now-slot{border-color:var(--gold);background:rgba(201,168,76,0.1)}
+.appt-time{font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--gold);line-height:1}
+.appt.now-slot .appt-time{color:#fff}
+.appt-name{font-size:11px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.appt-svc{font-size:10px;color:var(--text-mid);line-height:1.3;margin-top:2px;overflow:hidden}
+.appt-icon{position:absolute;top:6px;right:6px;font-size:10px}
+
+/* NOW LINE */
+#now-line{position:absolute;left:0;right:0;height:2px;background:var(--red);z-index:30;pointer-events:none}
+#now-line::before{content:'';position:absolute;left:-4px;top:-4px;width:10px;height:10px;border-radius:50%;background:var(--red)}
+
+#loading{display:flex;align-items:center;justify-content:center;height:50vh;flex-direction:column;gap:16px;color:var(--text-dim)}
+.spinner{width:28px;height:28px;border:2px solid var(--border2);border-top-color:var(--gold);border-radius:50%;animation:spin 0.9s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-#err{display:none;padding:40px 28px;color:var(--red);font-size:13px}
+#err{display:none;padding:40px 24px;color:var(--red);font-size:13px}
 </style>
 </head>
 <body>
@@ -58,10 +77,18 @@ header{display:flex;align-items:center;justify-content:space-between;padding:18p
     <button class="day-btn active" onclick="setDay(0)">Сегодня</button>
     <button class="day-btn" onclick="setDay(1)">Завтра</button>
   </div>
+  <div style="margin-left:16px;font-size:11px;color:var(--text-dim)"><span class="dot"></span>обновление каждую минуту</div>
 </div>
 <div id="loading"><div class="spinner"></div><span>Загружаем расписание…</span></div>
 <div id="err"></div>
-<div id="board" style="display:none"></div>
+<div id="wrap" style="display:none">
+  <div id="scroll">
+    <div id="grid">
+      <div class="time-col" id="time-col"></div>
+      <div id="cols"></div>
+    </div>
+  </div>
+</div>
 <script>
 var API='https://script.google.com/macros/s/AKfycbyqfD8xsp2rkX0eEASg2FoYXbtYpzXlC4TeXoS09RRDjvLDAG6UCNQqcLodVWG5oebzdA/exec';
 var BR={mendeleeva:{name:'Менделеева',cid:'694866'},entuziastov:{name:'Энтузиастов',cid:'1076318'}};
@@ -69,70 +96,156 @@ var p=new URLSearchParams(location.search);
 var bk=(p.get('branch')||'mendeleeva').toLowerCase();
 var br=BR[bk]||BR.mendeleeva;
 var dayOffset=0;
+var HOUR=64; // px per hour
+var DAY_START=10; // 10:00
+var DAY_END=21;   // 21:00
+var HOURS=DAY_END-DAY_START; // 11 hours
+
 document.getElementById('bl').textContent=br.name;
+
 function getTargetDate(offset){var d=new Date();d.setDate(d.getDate()+offset);return d;}
 function formatDate(d){var y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return y+'-'+m+'-'+day;}
+
 function tick(){
   var n=new Date();
   document.getElementById('cl').textContent=n.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
   var t=getTargetDate(dayOffset);
   var d=t.toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'});
   document.getElementById('dl').textContent=d.charAt(0).toUpperCase()+d.slice(1);
+  updateNowLine();
 }
 tick();setInterval(tick,1000);
+
 function setDay(offset){
   dayOffset=offset;
   document.querySelectorAll('.day-btn').forEach(function(b){b.classList.remove('active');});
   document.querySelectorAll('.day-btn')[offset+1].classList.add('active');
   load();
 }
+
+function timeToY(hhmm){
+  var parts=hhmm.split(':').map(Number);
+  var h=parts[0],m=parts[1];
+  return (h-DAY_START)*HOUR + (m/60)*HOUR;
+}
+
 function si(v){if(v===1)return{c:'sv',i:'🟢'};if(v===-1)return{c:'sc',i:'🔴'};return{c:'sp',i:'⚪'};}
-function isNow(t){
+
+function isNowSlot(hhmm){
   if(dayOffset!==0)return false;
-  var n=new Date(),a=t.split(':').map(Number),s=new Date(n);
+  var n=new Date(),a=hhmm.split(':').map(Number),s=new Date(n);
   s.setHours(a[0],a[1],0,0);
   return n>=s&&n<new Date(s.getTime()+3600000);
 }
-function render(list){
-  var b=document.getElementById('board');
-  b.innerHTML='';
-  if(!list||!list.length){
-    b.style.gridTemplateColumns='1fr';
-    b.innerHTML='<div style="padding:40px 28px;color:var(--text-dim)">Нет записей</div>';
-    return;
-  }
-  var cols=Math.min(list.length,5);
-  b.style.gridTemplateColumns='repeat('+cols+',1fr)';
-  list.forEach(function(s){
-    var col=document.createElement('div');col.className='col';
-    var h=document.createElement('div');h.className='col-header';
-    h.innerHTML='<div class="master-name">'+s.name+'</div><div class="master-count">'+s.appointments.length+' записей</div>';
-    col.appendChild(h);
-    var cs=document.createElement('div');cs.className='cards';
-    if(!s.appointments.length){
-      cs.innerHTML='<div style="padding:20px;color:var(--text-dim);text-align:center;font-size:12px">Нет записей</div>';
-    } else {
-      s.appointments.forEach(function(a){
-        var st=si(a.visit),now=isNow(a.time),svc=(a.services||[]).join(', ')||'—';
-        var c=document.createElement('div');
-        c.className='card '+st.c+(now?' now':'');
-        c.innerHTML='<div class="card-time">'+a.time+'</div><div class="card-client">'+a.clientName+'</div><div class="card-service">'+svc+'</div><div class="card-icon">'+st.i+'</div>';
-        cs.appendChild(c);
-      });
-    }
-    col.appendChild(cs);b.appendChild(col);
-  });
+
+function updateNowLine(){
+  var line=document.getElementById('now-line');
+  if(!line)return;
+  if(dayOffset!==0){line.style.display='none';return;}
+  var n=new Date();
+  var h=n.getHours(),m=n.getMinutes();
+  if(h<DAY_START||h>=DAY_END){line.style.display='none';return;}
+  var y=timeToY(String(h).padStart(2,'0')+':'+String(m).padStart(2,'0'));
+  line.style.display='block';
+  line.style.top=y+'px';
 }
+
+function buildTimeCol(){
+  var col=document.getElementById('time-col');
+  col.innerHTML='';
+  // header placeholder
+  var ph=document.createElement('div');
+  ph.style.height='40px';
+  ph.style.borderBottom='1px solid var(--border)';
+  col.appendChild(ph);
+  for(var h=DAY_START;h<=DAY_END;h++){
+    var slot=document.createElement('div');
+    slot.className='time-slot';
+    slot.textContent=h+':00';
+    col.appendChild(slot);
+  }
+}
+
+function render(list){
+  buildTimeCol();
+  var colsEl=document.getElementById('cols');
+  colsEl.innerHTML='';
+
+  // now line container
+  var nowLine=document.createElement('div');
+  nowLine.id='now-line';
+  nowLine.style.display='none';
+
+  var totalH=HOURS*HOUR;
+
+  list.forEach(function(s){
+    var mc=document.createElement('div');mc.className='master-col';
+
+    var head=document.createElement('div');head.className='master-head';
+    head.innerHTML='<div class="master-name">'+s.name+'</div><div class="master-count">'+s.appointments.length+' записей</div>';
+    mc.appendChild(head);
+
+    var body=document.createElement('div');body.className='master-body';
+    body.style.height=totalH+'px';
+    body.style.position='relative';
+
+    // hour lines
+    for(var h=0;h<=HOURS;h++){
+      var line=document.createElement('div');
+      line.className='hour-line';
+      line.style.top=(h*HOUR)+'px';
+      body.appendChild(line);
+    }
+
+    // appointments
+    s.appointments.forEach(function(a){
+      if(!a.time)return;
+      var parts=a.time.split(':').map(Number);
+      var hh=parts[0],mm=parts[1];
+      if(hh<DAY_START||hh>=DAY_END)return;
+
+      var y=timeToY(a.time);
+      // duration: try to get from services, default 60min
+      var dur=60;
+      var minH=Math.max(dur/60*HOUR,36);
+
+      var st=si(a.visit);
+      var nowCls=isNowSlot(a.time)?' now-slot':'';
+      var svc=(a.services||[]).join(', ')||'—';
+
+      var card=document.createElement('div');
+      card.className='appt '+st.c+nowCls;
+      card.style.top=(y+1)+'px';
+      card.style.height=(minH-2)+'px';
+      card.innerHTML='<div class="appt-time">'+a.time+'</div><div class="appt-name">'+a.clientName+'</div><div class="appt-svc">'+svc+'</div><div class="appt-icon">'+st.i+'</div>';
+      body.appendChild(card);
+    });
+
+    mc.appendChild(body);
+    colsEl.appendChild(mc);
+  });
+
+  colsEl.appendChild(nowLine);
+  updateNowLine();
+
+  // scroll to current time minus 1 hour
+  if(dayOffset===0){
+    var n=new Date();
+    var scrollY=Math.max(0,timeToY(String(n.getHours()).padStart(2,'0')+':00')-HOUR)+40;
+    document.getElementById('scroll').scrollTop=scrollY;
+  }
+}
+
 function load(){
   document.getElementById('loading').style.display='flex';
-  document.getElementById('board').style.display='none';
+  document.getElementById('wrap').style.display='none';
   document.getElementById('err').style.display='none';
   var date=formatDate(getTargetDate(dayOffset));
   fetch(API+'?action=getTodaySchedule&company_id='+br.cid+'&date='+date)
   .then(function(r){return r.json();})
   .then(function(j){
     document.getElementById('loading').style.display='none';
-    document.getElementById('board').style.display='grid';
+    document.getElementById('wrap').style.display='flex';
     render(j.data||[]);
   })
   .catch(function(e){
