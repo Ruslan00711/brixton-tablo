@@ -34,7 +34,8 @@ header{display:flex;align-items:center;justify-content:space-between;padding:14p
 .master-body{position:relative}
 .hour-line{position:absolute;left:0;right:0;border-bottom:1px solid var(--border);pointer-events:none}
 .appt{position:absolute;left:4px;right:4px;border-radius:8px;padding:6px 8px;overflow:hidden;cursor:default;border:1px solid rgba(255,255,255,0.06)}
-.appt.sv{background:rgba(62,207,110,0.12);border-left:3px solid var(--green)}
+.appt.sv{background:rgba(62,207,110,0.12);border-left:3px solid var(--green);animation:pulse-green 1.5s ease-in-out infinite}
+@keyframes pulse-green{0%,100%{box-shadow:0 0 0 0 rgba(62,207,110,0.4)}50%{box-shadow:0 0 0 6px rgba(62,207,110,0)}}
 .appt.sc{background:rgba(224,82,82,0.08);border-left:3px solid var(--red);opacity:0.6}
 .appt.sp{background:var(--bg3);border-left:3px solid var(--border2)}
 .appt.early{background:rgba(201,168,76,0.15);border-left:3px solid var(--gold)}
