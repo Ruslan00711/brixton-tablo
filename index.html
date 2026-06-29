@@ -206,7 +206,8 @@ function render(list){
       card.className='appt '+st.c+nowCls;
       card.style.top=(y+1)+'px';
       card.style.height=(minH-2)+'px';
-      card.innerHTML='<div class="appt-time">'+a.time+'</div><div class="appt-name">'+a.clientName+'</div><div class="appt-svc">'+svc+'</div><div class="appt-icon">'+st.i+'</div>';
+      var paidSign=a.paid?'<span style="color:var(--gold);font-weight:700;font-size:12px"> ✦</span>':'';
+      card.innerHTML='<div class="appt-time">'+a.time+'</div><div class="appt-name">'+a.clientName+paidSign+'</div><div class="appt-svc">'+svc+'</div><div class="appt-icon">'+st.i+'</div>';
       body.appendChild(card);
     });
     mc.appendChild(body);
