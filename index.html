@@ -181,7 +181,7 @@ function render(list){
       var st=si(a.visit);
       // жёлтый ТОЛЬКО если visit===1 И время ещё не наступило
       if(isEarly(a.time,a.visit)){st={c:'early',i:'🟡'};}
-      var nowCls=isNowSlot(a.time)?' now-slot':'';
+      var nowCls=(isNowSlot(a.time)&&a.visit!==-1)?' now-slot':'';
       var svc=(a.services||[]).join(', ')||'—';
       var card=document.createElement('div');
       card.className='appt '+st.c+nowCls;
