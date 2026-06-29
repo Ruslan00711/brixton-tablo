@@ -58,10 +58,14 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Mulish
 <div id="topbar">
   <div class="logo">BRIXTON</div>
   <div class="date-label" id="dl">—</div>
-  <div class="day-btns">
+ <div class="day-btns">
     <button class="day-btn" onclick="setDay(-1)">Вчера</button>
     <button class="day-btn active" onclick="setDay(0)">Сегодня</button>
     <button class="day-btn" onclick="setDay(1)">Завтра</button>
+  </div>
+  <div class="day-btns" style="margin-left:8px;border-left:1px solid var(--border2);padding-left:8px">
+    <button class="day-btn" id="btn-mend" onclick="setBranch('mendeleeva')">Менделеева</button>
+    <button class="day-btn" id="btn-ent" onclick="setBranch('entuziastov')">Энтузиастов</button>
   </div>
   <div style="font-size:10px;color:var(--text-dim)"><span class="dot"></span>авто</div>
   <div style="display:flex;flex-direction:column;align-items:flex-end;gap:1px">
@@ -92,6 +96,15 @@ var DAY_END=21;
 var HOURS=DAY_END-DAY_START;
 var HEAD_H=0; // будет измерен после рендера
 document.getElementById('bl').textContent=br.name;
+document.getElementById('btn-'+bk.substring(0,3)==='men'?'btn-mend':'btn-ent').classList.add('active');
+function setBranch(key){
+  bk=key;
+  br=BR[key]||BR.mendeleeva;
+  document.getElementById('bl').textContent=br.name;
+  document.querySelectorAll('#btn-mend,#btn-ent').forEach(function(b){b.classList.remove('active');});
+  document.getElementById(key==='mendeleeva'?'btn-mend':'btn-ent').classList.add('active');
+  load();
+}
 function toggleBranch(){
   var newKey=bk==='mendeleeva'?'entuziastov':'mendeleeva';
   window.location.href=location.pathname+'?branch='+newKey;
