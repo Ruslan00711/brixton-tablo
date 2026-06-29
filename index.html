@@ -130,7 +130,11 @@ function timeToY(hhmm){
   var parts=hhmm.split(':').map(Number);
   return (parts[0]-DAY_START)*HOUR+(parts[1]/60)*HOUR;
 }
-function si(v){if(v===1)return{c:'sv',i:'🟢'};if(v===-1)return{c:'sc',i:'🔴'};return{c:'sp',i:'⚪'};}
+function si(v){
+  if(v===1)return{c:'sv',i:'<span style="display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:var(--green);color:#000;font-size:10px;font-weight:900;line-height:1">+</span>'};
+  if(v===-1)return{c:'sc',i:'<span style="display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:var(--red);color:#fff;font-size:10px;font-weight:900;line-height:1">−</span>'};
+  return{c:'sp',i:'<span style="display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:var(--border2);color:var(--text-dim);font-size:10px;font-weight:900;line-height:1">·</span>'};
+}
 function isNowSlot(hhmm){
   if(dayOffset!==0)return false;
   var n=new Date(),a=hhmm.split(':').map(Number),s=new Date(n);
@@ -207,7 +211,7 @@ function render(list){
       card.style.top=(y+1)+'px';
       card.style.height=(minH-2)+'px';
       var paidSign=a.paid?'<span style="color:var(--gold);font-weight:700;font-size:12px"> +</span>':'';
-      card.innerHTML='<div class="appt-time">'+a.time+'</div><div class="appt-name">'+a.clientName+paidSign+'</div><div class="appt-svc">'+svc+'</div><div class="appt-icon">'+st.i+'</div>';
+      card.innerHTML='<div class="appt-time">'+a.time+'</div><div class="appt-name">'+a.clientName+paidSign+'</div><div class="appt-svc">'+svc+'</div><div class="appt-icon" style="line-height:1">'+st.i+'</div>';
       body.appendChild(card);
     });
     mc.appendChild(body);
