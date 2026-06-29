@@ -65,7 +65,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Mulish
   </div>
   <div style="font-size:10px;color:var(--text-dim)"><span class="dot"></span>авто</div>
   <div style="display:flex;flex-direction:column;align-items:flex-end;gap:1px">
-    <div class="branch-label" id="bl">—</div>
+    <div class="branch-label" id="bl" onclick="toggleBranch()" style="cursor:pointer;text-decoration:underline dotted">—</div>
     <div class="clock" id="cl">—</div>
   </div>
 </div>
@@ -92,6 +92,10 @@ var DAY_END=21;
 var HOURS=DAY_END-DAY_START;
 var HEAD_H=0; // будет измерен после рендера
 document.getElementById('bl').textContent=br.name;
+function toggleBranch(){
+  var newKey=bk==='mendeleeva'?'entuziastov':'mendeleeva';
+  window.location.href=location.pathname+'?branch='+newKey;
+}
 function getTargetDate(offset){var d=new Date();d.setDate(d.getDate()+offset);return d;}
 function formatDate(d){var y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return y+'-'+m+'-'+day;}
 function tick(){
