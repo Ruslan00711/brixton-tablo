@@ -131,9 +131,10 @@ function timeToY(hhmm){
   return (parts[0]-DAY_START)*HOUR+(parts[1]/60)*HOUR;
 }
 function si(v,paid){
-  if(v===1){var inner=paid?'+':'';return{c:'sv',i:'<span style="display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:var(--green);color:#000;font-size:11px;font-weight:900;line-height:14px">'+inner+'</span>'};}
-  if(v===-1)return{c:'sc',i:'<span style="display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:var(--red);color:#fff;font-size:11px;font-weight:900;line-height:14px">−</span>'};
-  return{c:'sp',i:'<span style="display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:var(--border2);color:var(--text-dim);font-size:11px;font-weight:900;line-height:14px">·</span>'};
+  var base='display:inline-block;width:14px;height:14px;border-radius:50%;text-align:center;font-size:11px;font-weight:900;line-height:13px;vertical-align:middle;';
+  if(v===1){var inner=paid?'+':'';return{c:'sv',i:'<span style="'+base+'background:var(--green);color:#000">'+inner+'</span>'};}
+  if(v===-1)return{c:'sc',i:'<span style="'+base+'background:var(--red);color:#fff">−</span>'};
+  return{c:'sp',i:'<span style="'+base+'background:var(--border2);color:var(--text-dim)">·</span>'};
 }
 function isNowSlot(hhmm){
   if(dayOffset!==0)return false;
