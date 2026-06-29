@@ -130,8 +130,8 @@ function timeToY(hhmm){
   var parts=hhmm.split(':').map(Number);
   return (parts[0]-DAY_START)*HOUR+(parts[1]/60)*HOUR;
 }
-function si(v){
-  if(v===1)return{c:'sv',i:'<span style="display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:var(--green);color:#000;font-size:10px;font-weight:900;line-height:1">+</span>'};
+function si(v,paid){
+  if(v===1){var inner=paid?'+':'';return{c:'sv',i:'<span style="display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:var(--green);color:#000;font-size:10px;font-weight:900;line-height:1">'+inner+'</span>'};}
   if(v===-1)return{c:'sc',i:'<span style="display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:var(--red);color:#fff;font-size:10px;font-weight:900;line-height:1">−</span>'};
   return{c:'sp',i:'<span style="display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:var(--border2);color:var(--text-dim);font-size:10px;font-weight:900;line-height:1">·</span>'};
 }
@@ -201,7 +201,7 @@ function render(list){
       var y=timeToY(a.time);
       var dur=a.duration||60;
       var minH=Math.max(dur/60*HOUR,36);
-      var st=si(a.visit);
+      var st=si(a.visit,a.paid);
       // жёлтый ТОЛЬКО если visit===1 И время ещё не наступило
       if(isEarly(a.time,a.visit)){st={c:'early',i:'🟡'};}
       var nowCls=(isNowSlot(a.time)&&a.visit!==-1)?' now-slot':'';
@@ -210,8 +210,7 @@ function render(list){
       card.className='appt '+st.c+nowCls;
       card.style.top=(y+1)+'px';
       card.style.height=(minH-2)+'px';
-      var paidSign=a.paid?'<span style="color:var(--gold);font-weight:700;font-size:12px"> +</span>':'';
-      card.innerHTML='<div class="appt-time">'+a.time+'</div><div class="appt-name">'+a.clientName+paidSign+'</div><div class="appt-svc">'+svc+'</div><div class="appt-icon" style="line-height:1">'+st.i+'</div>';
+      card.innerHTML='<div class="appt-time">'+a.time+'</div><div class="appt-name">'+a.clientName+'</div><div class="appt-svc">'+svc+'</div><div class="appt-icon" style="line-height:1">'+st.i+'</div>';
       body.appendChild(card);
     });
     mc.appendChild(body);
