@@ -211,7 +211,8 @@ function render(list){
       card.className='appt '+st.c+nowCls;
       card.style.top=(y+1)+'px';
       card.style.height=(minH-2)+'px';
-      card.innerHTML='<div class="appt-time">'+a.time+'</div><div class="appt-name">'+a.clientName+'</div><div class="appt-svc">'+svc+'</div><div class="appt-icon" style="line-height:1">'+st.i+'</div>';
+      var badge=a.isNew?'<span style="background:#e05252;color:#fff;font-size:8px;font-weight:700;padding:1px 4px;border-radius:3px;margin-left:4px;vertical-align:middle">NEW</span>':'<span style="color:var(--text-dim);font-size:9px;margin-left:4px;vertical-align:middle">'+a.visits+'v</span>';
+      card.innerHTML='<div class="appt-time">'+a.time+'</div><div class="appt-name">'+a.clientName+badge+'</div><div class="appt-svc">'+svc+'</div><div class="appt-icon" style="line-height:1">'+st.i+'</div>';
       body.appendChild(card);
     });
     mc.appendChild(body);
