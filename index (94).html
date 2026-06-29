@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BRIXTON — Расписание</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Mulish:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0d0d0d;--bg2:#161616;--bg3:#1e1e1e;--border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);--gold:#c9a84c;--text:#f0ede8;--text-dim:#8a8580;--text-mid:#b5b0a8;--green:#3ecf6e;--red:#e05252;--hour:64px}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Mulish',sans-serif;font-size:14px;overflow:hidden}
+#topbar{display:flex;align-items:center;justify-content:space-between;padding:6px 20px;border-bottom:1px solid var(--border);background:var(--bg);gap:16px}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:4px;color:var(--gold);line-height:1}
+.branch-label{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:3px;color:var(--text-mid)}
+.clock{font-size:11px;color:var(--text-dim)}
+.date-label{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:var(--gold)}
+.day-btns{display:flex;gap:5px}
+.day-btn{font-family:'Mulish',sans-serif;font-size:10px;padding:2px 10px;border-radius:20px;border:1px solid var(--border2);background:transparent;color:var(--text-dim);cursor:pointer}
+.day-btn.active{background:var(--gold);color:#000;border-color:var(--gold);font-weight:700}
+.dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--green);margin-right:4px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+#wrap{display:flex;flex-direction:column;height:calc(100vh - 36px)}
+#scroll{overflow-y:auto;flex:1}
+#grid{display:flex;position:relative}
+.time-col{width:48px;flex-shrink:0;position:sticky;left:0;z-index:20;background:var(--bg)}
+.time-slot{height:var(--hour);border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:flex-end;padding:4px 6px 0 0;font-family:'Bebas Neue',sans-serif;font-size:12px;color:var(--text-dim);letter-spacing:1px}
+#cols{display:flex;flex:1}
+.master-col{flex:1;border-left:1px solid var(--border);position:relative;min-width:0}
+.master-head{position:sticky;top:0;z-index:10;background:var(--bg2);border-bottom:2px solid var(--gold);padding:6px 10px 5px}
+.master-name{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;color:var(--text)}
+.master-count{font-size:9px;color:var(--text-dim);margin-top:1px}
+.master-body{position:relative}
+.hour-line{position:absolute;left:0;right:0;border-bottom:1px solid var(--border);pointer-events:none}
+.appt{position:absolute;left:3px;right:3px;border-radius:7px;padding:5px 7px;overflow:hidden;cursor:default;border:1px solid rgba(255,255,255,0.06)}
+.appt.sv{background:rgba(62,207,110,0.12);border-left:3px solid var(--green)}
+.appt.sc{background:rgba(224,82,82,0.08);border-left:3px solid var(--red);opacity:0.6}
+.appt.sp{background:var(--bg3);border-left:3px solid var(--border2)}
+.appt.early{background:rgba(201,168,76,0.15);border-left:3px solid var(--gold)}
+.appt.now-slot{border-color:var(--gold);background:rgba(201,168,76,0.08)}
+.appt-time{font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--gold);line-height:1}
+.appt.now-slot .appt-time{color:#fff}
+.appt-name{font-size:11px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.appt-svc{font-size:10px;color:var(--text-mid);line-height:1.3;margin-top:2px;overflow:hidden}
+.appt-icon{position:absolute;top:5px;right:5px;font-size:10px}
+#now-line{position:absolute;left:0;right:0;height:2px;background:var(--red);z-index:30;pointer-events:none}
+#now-line::before{content:'';position:absolute;left:-4px;top:-4px;width:10px;height:10px;border-radius:50%;background:var(--red)}
+#loading{display:flex;align-items:center;justify-content:center;height:50vh;flex-direction:column;gap:16px;color:var(--text-dim)}
+.spinner{width:28px;height:28px;border:2px solid var(--border2);border-top-color:var(--gold);border-radius:50%;animation:spin 0.9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#err{display:none;padding:40px 24px;color:var(--red);font-size:13px}
+</style>
+</head>
+<body>
+<div id="topbar">
+  <div class="logo">BRIXTON</div>
+  <div class="date-label" id="dl">—</div>
+  <div class="day-btns">
+    <button class="day-btn" onclick="setDay(-1)">Вчера</button>
+    <button class="day-btn active" onclick="setDay(0)">Сегодня</button>
+    <button class="day-btn" onclick="setDay(1)">Завтра</button>
+  </div>
+  <div style="font-size:10px;color:var(--text-dim)"><span class="dot"></span>авто</div>
+  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:1px">
+    <div class="branch-label" id="bl">—</div>
+    <div class="clock" id="cl">—</div>
+  </div>
+</div>
+<div id="loading"><div class="spinner"></div><span>Загружаем расписание…</span></div>
+<div id="err"></div>
+<div id="wrap" style="display:none">
+  <div id="scroll">
+    <div id="grid">
+      <div class="time-col" id="time-col"></div>
+      <div id="cols"></div>
+    </div>
+  </div>
+</div>
+<script>
+var API='https://script.google.com/macros/s/AKfycbyqfD8xsp2rkX0eEASg2FoYXbtYpzXlC4TeXoS09RRDjvLDAG6UCNQqcLodVWG5oebzdA/exec';
+var BR={mendeleeva:{name:'Менделеева',cid:'694866'},entuziastov:{name:'Энтузиастов',cid:'1076318'}};
+var p=new URLSearchParams(location.search);
+var bk=(p.get('branch')||'mendeleeva').toLowerCase();
+var br=BR[bk]||BR.mendeleeva;
+var dayOffset=0;
+var HOUR=64;
+var DAY_START=10;
+var DAY_END=21;
+var HOURS=DAY_END-DAY_START;
+var HEAD_H=34;
+document.getElementById('bl').textContent=br.name;
+function getTargetDate(offset){var d=new Date();d.setDate(d.getDate()+offset);return d;}
+function formatDate(d){var y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return y+'-'+m+'-'+day;}
+function tick(){
+  var n=new Date();
+  document.getElementById('cl').textContent=n.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  var t=getTargetDate(dayOffset);
+  var d=t.toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'});
+  document.getElementById('dl').textContent=d.charAt(0).toUpperCase()+d.slice(1);
+  updateNowLine();
+}
+tick();setInterval(tick,1000);
+function setDay(offset){
+  dayOffset=offset;
+  document.querySelectorAll('.day-btn').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('.day-btn')[offset+1].classList.add('active');
+  load();
+}
+function timeToY(hhmm){
+  var parts=hhmm.split(':').map(Number);
+  return (parts[0]-DAY_START)*HOUR+(parts[1]/60)*HOUR;
+}
+function si(v){if(v===1)return{c:'sv',i:'🟢'};if(v===-1)return{c:'sc',i:'🔴'};return{c:'sp',i:'⚪'};}
+function isNowSlot(hhmm){
+  if(dayOffset!==0)return false;
+  var n=new Date(),a=hhmm.split(':').map(Number),s=new Date(n);
+  s.setHours(a[0],a[1],0,0);
+  return n>=s&&n<new Date(s.getTime()+3600000);
+}
+function isEarly(hhmm,visit){
+  if(visit!==1||dayOffset!==0)return false;
+  var n=new Date(),a=hhmm.split(':').map(Number),s=new Date(n);
+  s.setHours(a[0],a[1],0,0);
+  return n.getTime()<s.getTime();
+}
+function updateNowLine(){
+  var line=document.getElementById('now-line');
+  if(!line)return;
+  if(dayOffset!==0){line.style.display='none';return;}
+  var n=new Date(),h=n.getHours(),m=n.getMinutes();
+  if(h<DAY_START||h>=DAY_END){line.style.display='none';return;}
+  var y=timeToY(String(h).padStart(2,'0')+':'+String(m).padStart(2,'0'))+HEAD_H;
+  line.style.display='block';
+  line.style.top=y+'px';
+}
+function buildTimeCol(){
+  var col=document.getElementById('time-col');
+  col.innerHTML='';
+  var ph=document.createElement('div');
+  ph.style.height=HEAD_H+'px';
+  ph.style.borderBottom='1px solid var(--border)';
+  col.appendChild(ph);
+  for(var h=DAY_START;h<=DAY_END;h++){
+    var slot=document.createElement('div');
+    slot.className='time-slot';
+    slot.textContent=h+':00';
+    col.appendChild(slot);
+  }
+}
+function render(list){
+  buildTimeCol();
+  var colsEl=document.getElementById('cols');
+  colsEl.innerHTML='';
+  var nowLine=document.createElement('div');
+  nowLine.id='now-line';
+  nowLine.style.display='none';
+  var totalH=HOURS*HOUR;
+  list.forEach(function(s){
+    var mc=document.createElement('div');mc.className='master-col';
+    var head=document.createElement('div');head.className='master-head';
+    head.innerHTML='<div class="master-name">'+s.name+'</div><div class="master-count">'+s.appointments.length+' записей</div>';
+    mc.appendChild(head);
+    var body=document.createElement('div');body.className='master-body';
+    body.style.height=totalH+'px';
+    body.style.position='relative';
+    for(var h=0;h<=HOURS;h++){
+      var line=document.createElement('div');
+      line.className='hour-line';
+      line.style.top=(h*HOUR)+'px';
+      body.appendChild(line);
+    }
+    s.appointments.forEach(function(a){
+      if(!a.time)return;
+      var parts=a.time.split(':').map(Number);
+      if(parts[0]<DAY_START||parts[0]>=DAY_END)return;
+      var y=timeToY(a.time);
+      var dur=a.duration||60;
+      var minH=Math.max(dur/60*HOUR,36);
+      var st=si(a.visit);
+      if(isEarly(a.time,a.visit)){st={c:'early',i:'🟡'};}
+      var nowCls=isNowSlot(a.time)?' now-slot':'';
+      var svc=(a.services||[]).join(', ')||'—';
+      var card=document.createElement('div');
+      card.className='appt '+st.c+nowCls;
+      card.style.top=(y+1)+'px';
+      card.style.height=(minH-2)+'px';
+      card.innerHTML='<div class="appt-time">'+a.time+'</div><div class="appt-name">'+a.clientName+'</div><div class="appt-svc">'+svc+'</div><div class="appt-icon">'+st.i+'</div>';
+      body.appendChild(card);
+    });
+    mc.appendChild(body);
+    colsEl.appendChild(mc);
+  });
+  colsEl.appendChild(nowLine);
+  updateNowLine();
+  if(dayOffset===0){
+    var n=new Date();
+    var scrollY=Math.max(0,timeToY(String(n.getHours()).padStart(2,'0')+':00')-HOUR)+HEAD_H;
+    document.getElementById('scroll').scrollTop=scrollY;
+  }
+}
+function load(){
+  document.getElementById('loading').style.display='flex';
+  document.getElementById('wrap').style.display='none';
+  document.getElementById('err').style.display='none';
+  var date=formatDate(getTargetDate(dayOffset));
+  fetch(API+'?action=getTodaySchedule&company_id='+br.cid+'&date='+date)
+  .then(function(r){return r.json();})
+  .then(function(j){
+    document.getElementById('loading').style.display='none';
+    document.getElementById('wrap').style.display='flex';
+    render(j.data||[]);
+  })
+  .catch(function(e){
+    document.getElementById('loading').style.display='none';
+    document.getElementById('err').style.display='block';
+    document.getElementById('err').textContent='Ошибка: '+e.message;
+  });
+}
+load();setInterval(load,60000);
+</script>
+</body>
+</html>
