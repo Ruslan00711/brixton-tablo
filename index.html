@@ -118,6 +118,7 @@ function isNowSlot(hhmm){
 }
 function isEarly(hhmm,visit){
   if(visit!==1||dayOffset!==0)return false;
+  if(visit===-1||visit===2)return false;
   var n=new Date(),a=hhmm.split(':').map(Number),s=new Date(n);
   s.setHours(a[0],a[1],0,0);
   return n.getTime()<s.getTime();
