@@ -83,6 +83,7 @@ html,body{height:100%;background:#111;color:var(--text);font-family:'Mulish',san
     <button class="day-btn" id="btn-mendeleeva" onclick="setBranch('mendeleeva')">Менделеева</button>
     <button class="day-btn" id="btn-entuziastov" onclick="setBranch('entuziastov')">Энтузиастов</button>
   </div>
+  <button class="day-btn" onclick="showAll()" style="margin-left:8px">Показать всех</button>
   <div style="font-size:9px;color:rgba(255,255,255,0.4)"><span class="dot"></span>авто</div>
   <div style="display:flex;flex-direction:column;align-items:flex-end;gap:1px">
     <div class="branch-label" id="bl">—</div>
@@ -116,6 +117,10 @@ var hiddenMasters=new Set();
 function toggleMaster(name){
   if(hiddenMasters.has(name))hiddenMasters.delete(name);
   else hiddenMasters.add(name);
+  load();
+}
+function showAll(){
+  hiddenMasters.clear();
   load();
 }
 var DAY_START=10,DAY_END=21,HOURS=11;
