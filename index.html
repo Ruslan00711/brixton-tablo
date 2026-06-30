@@ -176,10 +176,13 @@ function updateNowLine(){
   var l=document.getElementById('now-line');
   if(!l||!HOUR)return;
   if(dayOffset!==0){l.style.display='none';return;}
-  var n=new Date(),h=n.getHours(),m=n.getMinutes();
+  var n=new Date(),h=n.getHours(),m=n.getMinutes(),sec=n.getSeconds();
   if(h<DAY_START||h>=DAY_END){l.style.display='none';return;}
+  var totalMinutes=h*60+m+sec/60;
+  var dayStartMinutes=DAY_START*60;
+  var y=((totalMinutes-dayStartMinutes)/60)*HOUR+HEAD_H;
   l.style.display='block';
-  l.style.top=(timeToY(String(h).padStart(2,'0')+':'+String(m).padStart(2,'0'))+HEAD_H)+'px';
+  l.style.top=y+'px';
 }
 
 // Умный подбор: всегда показываем услугу, уменьшаем шрифт
