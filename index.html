@@ -112,6 +112,12 @@ var p=new URLSearchParams(location.search);
 var bk=(p.get('branch')||'mendeleeva').toLowerCase();
 var br=BR[bk]||BR.mendeleeva;
 var dayOffset=0;
+var hiddenMasters=new Set();
+function toggleMaster(name){
+  if(hiddenMasters.has(name))hiddenMasters.delete(name);
+  else hiddenMasters.add(name);
+  load();
+}
 var DAY_START=10,DAY_END=21,HOURS=11;
 var HOUR=0,HEAD_H=0;
 document.getElementById('bl').textContent=br.name;
@@ -219,9 +225,15 @@ function render(list){
   var totalH=HOURS*HOUR;
   var allCards=[];
 
+  list=list.filter(function(s){return !hiddenMasters.has(s.name);});
   list.forEach(function(s){
     var mc=document.createElement('div');mc.className='master-col';
+    var mc=document.createElement('div');mc.className='master-col';
     var hd=document.createElement('div');hd.className='master-head';
+    hd.style.cursor='pointer';
+    hd.onclick=function(staffName){
+      return function(){ toggleMaster(staffName); };
+    }(s.name);
     hd.innerHTML='<div class="master-name">'+s.name+'</div><div class="master-count">'+s.appointments.length+' зап.</div>';
     mc.appendChild(hd);
     var bd=document.createElement('div');bd.className='master-body';
